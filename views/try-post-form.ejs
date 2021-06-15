@@ -1,0 +1,17 @@
+<%- include("parts/html_head") %>
+<%- include("parts/navbar") %>
+<div class="container">
+
+        <form method="post">
+            <input type="text" name="email">
+            <span><%= (locals.data && data.email) ? data.email : '' %></span>
+            <br>
+            <input type="password" name="password">
+            <span><%= (locals.data && data.password) ? data.password : '' %></span>
+            <br>
+            <input type="submit" value="My submit">
+        </form>
+    
+    </div>
+<%- include("parts/scripts") %>
+<%- include("parts/html_foot") %>

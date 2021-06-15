@@ -1,0 +1,32 @@
+<%- include("parts/html_head") %>
+
+<% if(locals.success){ %>
+    <div><%= name %></div>
+    <div><img src="<%= avatar %>" alt=""></div>
+<% } %>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name">
+    </div>
+    <div class="form-group">
+        <label for="avatar2">Avatar</label>
+        <input type="file" class="form-control" id="avatar" name="avatar" style="display: none;">
+        <button type="button" class="btn btn-primary" id="but1" name="but1">選擇檔案</button>
+        <input type="text" class="form-control" id="avatar2" name="avatar2" disabled>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<%- include("parts/scripts") %>
+<script>
+    $("#but1").click(function(){
+        $("#avatar").click();
+    });
+    
+    $('#avatar').change(function(){
+        console.log(this.files[0]);
+        $('#avatar2').val(this.files[0].name);
+    });
+</script>
+<%- include("parts/html_foot") %>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<textarea name="" id="ta" cols="50" rows="30"></textarea>
+
+<script>
+// `name`, `mobile`, `email`, `birthday`, `address`, `created_at`
+    let str = '';
+    for(let i=0; i<100; i++){
+        let m = '09'+ (10000000+Math.floor(Math.random()*100000000));
+        str += `('李小明${i}', 'i${i}@gmail.com','${m}', '2000-10-10',  '高雄市', '2019-10-31'),`;
+    }
+
+    document.querySelector('#ta').value = str;
+
+
+
+
+</script>
+</body>
+</html>

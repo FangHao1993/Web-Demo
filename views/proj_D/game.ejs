@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game</title>
+    <script src="lib/jquery-3.4.1.js"></script>
+    <script src="bootstrap/js/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: 微軟正黑體;
+        }
+
+        .div1 {
+            position: relative;
+            width: 1920px;
+            height: 900px;
+            /* border: 1px red solid; */
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .div2 {
+            left: 0;
+            top: 0;
+        }
+
+        .div3 {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 37px;
+            color: black;
+            text-align: center;
+            line-height: 37px;
+        }
+
+        td {
+            width: 192px;
+            background-color: red;
+        }
+
+        #rect {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background-color: #b0e9ff;
+        }
+
+        .ball {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #FFFFFF;
+            background-color: #0072E3;
+            position: absolute;
+            overflow: hidden;
+            text-align: center;
+            line-height: 100px;
+            color: #FFFFFF;
+            font-size: 20px;
+            font-weight: 600;
+
+        }
+
+        #info {
+            position: fixed;
+            top: 0px;
+            right: 50%;
+            border: 2px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <form name="form-game" action="/point-table" method="post" style="display: none;">
+        <input type="text" name="account" id="account" value="<%=loginUser%>">
+        <input type="text" name="pointv" id="pointv">
+        
+        <input type="submit" id="submit">
+    </form>
+    <div id="div1" class="div1">
+        <div class="div2" id="point">Point : 0</div>
+        <div class="div2" id="level">Level : 10</div>
+
+    </div>
+    <div style="display: none;">
+        <table>
+            <% for(let i=0; i<english.length; i++){
+                    let k=english[i];
+                    let j=chinese[i]; %>
+            <tr id="word">
+                <td><%= k['english'] %>,</td>
+                <td><%= j['chinese'] %>,</td>
+            </tr>
+                <% } %>
+        </table>
+    </div>
+
+    <div class="div3">
+        <table class="tab1">
+            <td class="td1"></td>
+            <td class="td2"></td>
+            <td class="td3"></td>
+            <td class="td4"></td>
+            <td class="td5" id="td5" style="text-align: right">100</td>
+            <td class="td6" style="text-align: left">%</td>
+            <td class="td7"></td>
+            <td class="td8"></td>
+            <td class="td9"></td>
+            <td class="td10"></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        eng =[];
+        chi =[];
+
+        allwords = $("#word>td").text().split(",")
+        allwords.pop();
+         for(i=0;i<allwords.length;i++){
+            if(i%2 == 0){
+                eng = eng.concat(allwords[i]);
+            }
+            else{
+                chi = chi.concat(allwords[i]);
+            }
+        }
+        eng1 = JSON.parse(JSON.stringify(eng))
+        function start() {
+            alert("遊戲規則 : \n1.輸入球中英文單字後球會消失並+10 point。\n2.血量初始為100如球離開視窗則血量-10，血量歸零則結束。\n※註記\n請開啟聲音。\n速度會自動加速或手動加速(+、-)。")
+            c = 0;
+            speed = 10;
+            health = 10;
+            point = 0;
+            keywords = "";
+            // ABCs = ["apple", "bear", "cat", "dog", "ear", "fish", "goat", "hat", "iphone", "joker"];
+            ABCs = eng1;
+            balloon();
+            upper();
+            speeder();
+            function balloon() {
+                c++;
+                if (ABCs.length == 0) {
+                    // ABCs = ["apple", "bear", "cat", "dog", "ear", "fish", "goat", "hat", "iphone", "joker"];
+                    ABCs = eng1;
+                }
+                left = Math.floor(Math.random() * 1820);
+                ABC = ABCs.splice(Math.floor(Math.random() * (ABCs.length)) - 1, 1)
+                bal = `<div class="ball" id="ball${c}"  style="left:${left}px;top: 900px;">${ABC}</div>`;
+                $("#div1").append(bal)
+                if (c == 100) {
+                    c = 0;
+                }
+                setTimeout(balloon, 2000);
+            }
+            function upper() {
+                if (health == 0) {
+                    alert(`Game Over\nPoint : ${point}`);
+                    $("#submit").click();
+                    // location.href = "/login-table"
+                    // open = location.href = 'http://localhost:3000/login-table'
+                }
+                $(".ball").css("top", "-=50")
+                $(".ball").each(function () {
+                    if ($(this).offset().top < -50) {           //offset()  抓取元素座標 相對位置於relative元素
+                        $(this).remove();                       //position()抓取元素座標 相對位置於document
+                        health -= 1;
+                        $("#td5").text(health * 10);
+                        healther();
+                        console.log(health);
+                    }
+                });
+                setTimeout(upper, 150 * speed);
+            }
+            function healther() {
+                for (i = 1; i <= health; i++) {
+                    $(`.td${i}`).css("background-color", "red");
+                }
+                for (i = health + 1; i <= 10; i++) {
+                    $(`.td${i}`).css("background-color", "white");
+                }
+            }
+            function speeder() {
+                if (speed > 5) {
+                    speed -= 1;
+                    $("#level").text(`Level : ${21 - speed}`);
+                    console.log("speed :", speed);
+                }
+                setTimeout(speeder, 10000);
+            }
+            $(document).keyup(function (event) {
+                console.log('key:', event.key);
+                console.log('which:', event.which);
+                key = event.key;
+                keywords += event.key;
+                keywords = keywords.toLowerCase();
+                for (i = 1; i <= 100; i++) {
+                    if (((keywords.indexOf($(`#ball${i}`).text())) != -1) && (($(`#ball${i}`).text()) != "")) {
+                        var words = new SpeechSynthesisUtterance();
+                        words.pitch = 1;
+                        words.rate = 1;
+                        ss = $(`#ball${i}`).text()
+                        words.text = ss + ",,," + chi[eng.indexOf(ss)];
+                        window.speechSynthesis.speak(words);
+                        // words.text = chi[eng.indexOf(ss)]
+                        // window.speechSynthesis.speak(words);
+                        // var audio = new Audio();
+                        // audio.src = 'http://translate.google.com/translate_tts?ie=utf-8&;tl=en&;q=' + $(`#ball${i}`).text();
+                        // audio.play();
+                        $(`#ball${i}`).remove();
+                        keywords = "";
+                        // if (health != 10) {
+                        //     health += 1;
+                        // }
+                        point += 10;
+                        $("#pointv").val(point)
+                        $("#point").text(`Point : ${point}`)
+                        $("#td5").text(health * 10);
+                        healther();
+                        console.log(health);
+                    }
+                }
+                if ((key == "+") && (speed > 1)) {
+                    speed -= 1;
+                    $("#level").text(`Level : ${21 - speed}`);
+                    console.log("speed :", speed);
+                }
+                if ((event.key == "-") && (speed < 20)) {
+                    speed += 1;
+                    $("#level").text(`Level : ${21 - speed}`);
+                    console.log("speed :", speed);
+                }
+            });
+        }
+        $(document).ready(start)
+        // $(document).mousemove(function (event) {
+        //     let str = `page: ${event.pageX}, ${event.pageY} <br>
+        //                    client: ${event.clientX}, ${event.clientY} <br>
+        //                    offset: ${event.offsetX}, ${event.offsetY}`;
+        //     $('.div2').html(str);
+        // });
+    </script>
+
+</body>
+
+</html>

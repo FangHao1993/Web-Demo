@@ -1,0 +1,41 @@
+<%- include("parts/html_head") %>
+<%- include("parts/navbar") %>
+<div class="container">
+
+        <form name="form1" method="post" onsubmit="return checkForm()">
+            <input type="text" name="email">
+            <br>
+            <input type="password" name="password">
+            <br>
+            <input type="submit" value="My submit">
+        </form>
+        <div id="info">
+    
+        </div>
+    </div>
+<%- include("parts/scripts") %>
+<script>
+        function checkForm(){
+            if(! form1.email.value.length){
+                alert('請填 email');
+                return false;
+            }
+            if(! form1.password.value.length){
+                alert('請填 password');
+                return false;
+            }
+            $.post("/try-ajax", $(form1).serialize(), function(data){
+                console.log(data);
+                $("#info").html(JSON.stringify(data));
+            });
+            // $.post('/try-ajax', {
+            //     name: form1.email.value,
+            //     pass: form1.password.value,
+            // }, function(data){
+            //     console.log(data);
+            //     $('#info').html(JSON.stringify(data));
+            // });
+            return false;
+        }
+    </script>
+<%- include("parts/html_foot") %>

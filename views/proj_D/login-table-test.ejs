@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: 微軟正黑體;
+        }
+
+        .div1 {
+            position: relative;
+            width: 1917px;
+            height: 935px;
+            border: 1px red solid;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .div2 {
+            position: absolute;
+            left: 0;
+            top: 0;
+            border: 1px red solid;
+        }
+
+        #rect {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background-color: #b0e9ff;
+        }
+
+        .ball {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 1px solid black;
+            background-color: #ff2f27;
+            position: absolute;
+            overflow: hidden;
+            text-align: center;
+            line-height: 100px;
+            color: aqua;
+
+        }
+
+        #info {
+            position: fixed;
+            top: 0px;
+            right: 50%;
+            border: 2px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include("navbar") %>
+    <table class="table table-striped table-dark">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Birthday</th>
+                <th scope="col">Idcode</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">address</th>
+                <th scope="col">E-mail</th>
+                <th scope="col">Account</th>
+                <th scope="col">Create At</th>
+            </tr>
+        </thead>
+        <tbody id="tb1">
+            <!-- <tr>
+                <th scope="row">1</th>
+                <td><%= (locals.tabledata && tabledata.membername) ? tabledata.membername : '' %></td>
+                <td><%= (locals.tabledata && tabledata.account) ? tabledata.account : '' %></td>
+                <td><%= (locals.tabledata && tabledata.idcode) ? tabledata.idcode : '' %></td>
+            </tr> -->
+        </tbody>
+    </table>
+    <div id="div1" class="">
+        <div class=""></div>
+    </div>
+    <div class=""></div>
+    <%- include("scripts") %>
+    <script>
+        $(document).ready(add)
+        function add(){
+            $("#tb1").append(`<tr>
+            <th scope="row">1</th>
+            <td><%=name%></td>
+            <td><%=gender%></td>
+            <td><%=birthday%></td>
+            <td><%=idcode%></td>
+            <td><%=mobile%></td>
+            <td><%=address%></td>
+            <td><%=email%></td>
+            <td><%=account%></td>
+            <td></td>
+            </tr>`);
+            
+        }
+    </script>
+
+</body>
+
+</html>

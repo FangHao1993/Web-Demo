@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game</title>
+    <script src="lib/jquery-3.4.1.js"></script>
+    <script src="bootstrap/js/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: 微軟正黑體;
+        }
+
+        .div1 {
+            position: relative;
+            width: 1920px;
+            height: 900px;
+            /* border: 1px red solid; */
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .div2 {
+            position: absolute;
+            left: 0;
+            top: 0;
+            border: 1px red solid;
+        }
+
+        .div3 {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 37px;
+            color: black;
+            text-align: center;
+            line-height: 37px;
+        }
+
+        td {
+            width: 192px;
+            background-color: red;
+        }
+
+        #rect {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background-color: #b0e9ff;
+        }
+
+        .ball {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 1px solid black;
+            background-color: #FF7575;
+            position: absolute;
+            overflow: hidden;
+            text-align: center;
+            line-height: 100px;
+            color: #02F78E;
+            font-size: 28px;
+            font-weight: 600;
+
+        }
+
+        #info {
+            position: fixed;
+            top: 0px;
+            right: 50%;
+            border: 2px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="div1" class="div1">
+        <div class="div2"></div>
+    </div>
+
+    <div class="div3">
+        <table class="tab1">
+            <tr>
+                <td class="td1"></td>
+                <td class="td2"></td>
+                <td class="td3"></td>
+                <td class="td4"></td>
+                <td class="td5" id="td5" style="text-align: right">100</td>
+                <td class="td6" style="text-align: left">%</td>
+                <td class="td7"></td>
+                <td class="td8"></td>
+                <td class="td9"></td>
+                <td class="td10"></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function start() {
+            c = 0;
+            speed = 10;
+            health = 10;
+            point = 0;
+            keywords = "";
+            ABCs = ["apple", "bear", "cat", "dog", "ear", "fish", "goat", "hat", "iphone", "joker"];
+            balloon();
+            upper();
+            speeder();
+            function balloon() {
+                c++;
+                if (ABCs.length == 0) {
+                    ABCs = ["apple", "bear", "cat", "dog", "ear", "fish", "goat", "hat", "iphone", "joker"];
+                }
+                left = Math.floor(Math.random() * 1820);
+                ABC = ABCs.splice(Math.floor(Math.random() * (ABCs.length)) - 1, 1)
+                bal = `<div class="ball" id="ball${c}"  style="left:${left}px;top: 900px;">${ABC}</div>`;
+                $("#div1").append(bal)
+                if (c == 100) {
+                    c = 0;
+                }
+                setTimeout(balloon, 1000 * speed);
+            }
+            function upper() {
+                // if(health == 0){
+                //     alert(`Game Over\nPoint : ${point}`)
+                //     window.location.reload();
+                // }
+                $(".ball").css("top", "-=50")
+                $(".ball").each(function () {
+                    if ($(this).offset().top < -50) {           //offset()  抓取元素座標 相對位置於relative元素
+                        $(this).remove();                       //position()抓取元素座標 相對位置於document
+                        health -= 1;
+                        $("#td5").text(health * 10);
+                        healther();
+                        console.log(health);
+                    }
+                });
+                setTimeout(upper, 500);
+            }
+            function healther() {
+                for (i = 1; i <= health; i++) {
+                    $(`.td${i}`).css("background-color", "red");
+                }
+                for (i = health + 1; i <= 10; i++) {
+                    $(`.td${i}`).css("background-color", "white");
+                }
+            }
+            function speeder() {
+                if (speed > 5) {
+                    speed -= 1;
+                    console.log("speed :", speed);
+                }
+                setTimeout(speeder, 5000);
+            }
+            $(document).keyup(function (event) {
+                console.log('key:', event.key);
+                console.log('which:', event.which);
+                key = event.key;
+                keywords += event.key;
+                for (i = 1; i <= 100; i++) {
+                    if (((keywords.indexOf($(`#ball${i}`).text())) != -1) && (($(`#ball${i}`).text()) != "")) {
+                        $(`#ball${i}`).remove();
+                        keywords = "";
+                        if (health != 10) {
+                            health += 1;
+                        }
+                        point += 10;
+                        $("#td5").text(health * 10);
+                        healther();
+                        console.log(health);
+                    }
+                }
+                if ((key == "+") && (speed > 1)) {
+                    speed -= 1;
+                    console.log("speed :", speed);
+                }
+                if ((event.key == "-") && (speed < 20)) {
+                    speed += 1;
+                    console.log("speed :", speed);
+                }
+            });
+        }
+        $(document).ready(start)
+        // $(document).mousemove(function (event) {
+        //     let str = `page: ${event.pageX}, ${event.pageY} <br>
+        //                    client: ${event.clientX}, ${event.clientY} <br>
+        //                    offset: ${event.offsetX}, ${event.offsetY}`;
+        //     $('.div2').html(str);
+        // });
+        // speed.change(function(){
+        //     $("#div2").html("Level " +speed);
+        // })
+        
+    </script>
+<script>
+    function playAudio(id, lang, text) {
+      var audio = document.getElementById(id); // 取得 audio 控制項
+      audio.src = "http://translate.google.com/translate_tts?ie=utf-8&tl="+lang+"&q="+text; // 設定語音為 google TTS。
+      audio.addEventListener('ended', function(){ this.currentTime = 0; }, false); // 當播放完畢，強制回到開頭。
+      audio.play(); // 播放語音。
+    }
+  </script>
+    <audio id="audio1"></audio> 
+    <textarea id="text" rows=10 cols=60>
+    你好、這是谷歌的語音合成測試！
+    我們呼叫谷歌翻譯的 TTS API 去合成語音。
+    </textarea><BR/>
+    <button onclick="playAudio('audio1', 'zh', document.getElementById('text').value);">播放</button>
+</body>
+
+</html>
